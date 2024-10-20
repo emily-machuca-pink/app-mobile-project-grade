@@ -1,16 +1,14 @@
-# mobile_dev
+# app-mobile-project-grade
 
-A new Flutter project.
+Este proyecto es una aplicación móvil desarrollada con el framework Flutter, que tiene como objetivo ofrecer soluciones tecnológicas innovadoras para el área de salud. La aplicación busca mejorar la gestión de la información y facilitar el acceso a servicios de salud a través de una interfaz intuitiva y amigable.
 
-## Getting Started
+## Tecnologías utilizadas
 
-This project is a starting point for a Flutter application.
+- Flutter
+- Dart
 
-A few resources to get you started if this is your first Flutter project:
+## Instrucciones de instalación
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clona el repositorio.
+2. Ejecuta `flutter pub get` para instalar las dependencias.
+3. Ejecuta el proyecto con `flutter run`.
