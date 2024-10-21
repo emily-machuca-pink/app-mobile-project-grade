@@ -3,6 +3,7 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:mobile_dev/src/views/signin/sign_in_view.dart';
 
 /// {@template on_borading_view}
 /// A UI that represents the onboarding screen of the Hospinova app.
@@ -21,7 +22,7 @@ class OnBoardingView extends StatelessWidget {
     return Container(
       color: Colors.blue,
       child: Center(
-        child: _buildBody(),
+        child: _buildBody(context),
       ),
     );
   }
@@ -30,7 +31,7 @@ class OnBoardingView extends StatelessWidget {
 
   //#region Private methods
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -42,7 +43,7 @@ class OnBoardingView extends StatelessWidget {
         const SizedBox(height: 20),
         _makeNameDisplay(),
         const SizedBox(height: 20),
-        _makeStarterButton(),
+        _makeStarterButton(context),
         const SizedBox(height: 50),
       ],
     );
@@ -60,9 +61,16 @@ class OnBoardingView extends StatelessWidget {
     );
   }
 
-  Widget _makeStarterButton() {
+  Widget _makeStarterButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SignInView(),
+          ),
+        );
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(
