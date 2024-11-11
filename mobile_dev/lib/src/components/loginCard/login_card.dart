@@ -3,6 +3,7 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:mobile_dev/src/components/emergency_button/emergency_button.dart';
 
 class LoginCard extends StatelessWidget {
   const LoginCard({super.key});
@@ -32,7 +33,7 @@ class LoginCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Nombre de la EPS',
+                  'X EPS',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.blue,
@@ -57,7 +58,13 @@ class LoginCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EmergencyButton()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(
