@@ -1,6 +1,5 @@
-//
-//  Copyright © 2024 Emily Machuca. All rights reserved.
-//
+// Copyright © 2025, Proyecto de Grado
+// Todos los derechos reservados.
 
 import 'package:flutter/material.dart';
 import 'package:mobile_dev/src/views/signin/sign_in_view.dart';
