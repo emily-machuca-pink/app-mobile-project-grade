@@ -3,19 +3,39 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:mobile_dev/src/components/components.dart';
 
+/// Enumeración para definir los roles en la aplicación.
 enum HospiRoles { paciente, paramedico }
 
+/// {@template login_card}
+/// Componente que representa una tarjeta de inicio de sesión.
+/// Permite cambiar entre los roles de paciente y paramédico.
+/// {@endtemplate}
 class LoginCard extends StatefulWidget {
+  //#region Constructor
+
+  /// {@macro login_card}
   const LoginCard({super.key});
+
+  //#endregion
 
   @override
   _LoginCardState createState() => _LoginCardState();
 }
 
 class _LoginCardState extends State<LoginCard> {
+  //#region Properties
+
+  /// Rol seleccionado actualmente.
   HospiRoles _selectedRole = HospiRoles.paciente;
+
+  /// Tipo de documento seleccionado.
   String _selectedDocumentType = 'CC';
+
+  //#endregion
+
+  //#region Overridden Methods
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +73,11 @@ class _LoginCardState extends State<LoginCard> {
     );
   }
 
-  // Widget para las pestañas de roles
+  //#endregion
+
+  //#region Private Widgets
+
+  /// Construye las pestañas para cambiar entre roles.
   Widget _buildRoleTabs() {
     return Row(
       children: [
@@ -107,26 +131,19 @@ class _LoginCardState extends State<LoginCard> {
     );
   }
 
-  // Formulario para Paciente
-  Widget _buildPatientForm() {
-    return _buildPatientFormContent();
-  }
+  /// Construye el formulario para pacientes.
+  Widget _buildPatientForm() => _buildPatientFormContent();
 
-  // Formulario para Paramédico
-  Widget _buildParamedicForm() {
-    return _buildParamedicFormContent();
-  }
+  /// Construye el formulario para paramédicos.
+  Widget _buildParamedicForm() => _buildParamedicFormContent();
 
-  // Formulario para Paciente
+  /// Contenido del formulario para pacientes.
   Widget _buildPatientFormContent() {
     return Column(
       children: [
         const Text(
           'Nombre de la EPS',
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.blue,
-          ),
+          style: TextStyle(fontSize: 18, color: Colors.blue),
         ),
         const SizedBox(height: 20),
         _buildDropdownField(),
@@ -139,41 +156,34 @@ class _LoginCardState extends State<LoginCard> {
           alignment: Alignment.centerLeft,
           child: TextButton(
             onPressed: () {},
-            child: const Text(
-              '¿Olvidé mi contraseña?',
-              style: TextStyle(color: Colors.black),
-            ),
+            child: const Text('¿Olvidé mi contraseña?', style: TextStyle(color: Colors.black)),
           ),
         ),
         const SizedBox(height: 10),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EmergencyButtonView()),
+            );
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           ),
-          child: const Text(
-            'Inicia Sesión',
-            style: TextStyle(color: Colors.white),
-          ),
+          child: const Text('Inicia Sesión', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
   }
 
-  // Formulario para Paramédico
+  /// Contenido del formulario para paramédicos.
   Widget _buildParamedicFormContent() {
     return Column(
       children: [
         const Text(
           'Nombre de la EPS',
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.blue,
-          ),
+          style: TextStyle(fontSize: 18, color: Colors.blue),
         ),
         const SizedBox(height: 20),
         _buildTextField('Número de documento'),
@@ -184,37 +194,32 @@ class _LoginCardState extends State<LoginCard> {
           alignment: Alignment.centerLeft,
           child: TextButton(
             onPressed: () {},
-            child: const Text(
-              '¿Olvidé mi contraseña?',
-              style: TextStyle(color: Colors.black),
-            ),
+            child: const Text('¿Olvidé mi contraseña?', style: TextStyle(color: Colors.black)),
           ),
         ),
         const SizedBox(height: 10),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ParamedicHomeView()),
+            );
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           ),
-          child: const Text(
-            'Inicia Sesión',
-            style: TextStyle(color: Colors.white),
-          ),
+          child: const Text('Inicia Sesión', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
   }
 
+  /// Construye un campo desplegable para seleccionar el tipo de documento.
   Widget _buildDropdownField() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
         labelText: 'Tipo de documento',
         filled: true,
         fillColor: Colors.grey[200],
@@ -225,20 +230,15 @@ class _LoginCardState extends State<LoginCard> {
         DropdownMenuItem(value: 'TI', child: Text('Tarjeta de Identidad')),
         DropdownMenuItem(value: 'PP', child: Text('Pasaporte')),
       ],
-      onChanged: (value) {
-        setState(() {
-          _selectedDocumentType = value ?? 'CC';
-        });
-      },
+      onChanged: (value) => setState(() => _selectedDocumentType = value ?? 'CC'),
     );
   }
 
+  /// Construye un campo de texto genérico.
   Widget _buildTextField(String label, {bool isPassword = false}) {
     return TextFormField(
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
         labelText: label,
         filled: true,
         fillColor: Colors.grey[200],
@@ -246,4 +246,6 @@ class _LoginCardState extends State<LoginCard> {
       obscureText: isPassword,
     );
   }
+
+  //#endregion
 }

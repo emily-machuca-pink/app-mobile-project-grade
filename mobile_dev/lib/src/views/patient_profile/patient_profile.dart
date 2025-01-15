@@ -1,44 +1,80 @@
+// Copyright © 2025, Proyecto de Grado
+// Todos los derechos reservados.
+
+// Importaciones principales
 import 'package:flutter/material.dart';
 
+/// {@template patient_profile}
+/// Pantalla principal para mostrar y actualizar el perfil de un paciente.
+/// Contiene información personal, médica y opciones para editar estos datos.
+/// {@endtemplate}
 class PatientProfile extends StatelessWidget {
+  //#region Constructor
+
+  /// {@macro patient_profile}
   const PatientProfile({super.key});
+
+  //#endregion
+
+  //#region Overridden Methods
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: const Text('Perfil'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+      appBar: _buildAppBar(context),
+      body: _buildBody(),
+    );
+  }
+
+  //#endregion
+
+  //#region Private Widgets
+
+  /// Construye la barra de navegación superior.
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.blue,
+      title: const Text(
+        'Perfil',
+        style: TextStyle(color: Colors.white),
+      ),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        color: Colors.white,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.help_outline),
           onPressed: () {
-            Navigator.pop(context);
+            // Acción para mostrar ayuda.
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 20),
-              _buildInformationCard(),
-              const SizedBox(height: 20),
-              _buildUpdateForm(),
-            ],
-          ),
+      ],
+    );
+  }
+
+  /// Construye el cuerpo principal de la pantalla.
+  Widget _buildBody() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 20),
+            _buildInformationCard(),
+            const SizedBox(height: 20),
+            _buildUpdateForm(),
+          ],
         ),
       ),
     );
   }
 
+  /// Construye el encabezado con el avatar y el nombre del paciente.
   Widget _buildHeader() {
     return Column(
       children: [
@@ -46,7 +82,7 @@ class PatientProfile extends StatelessWidget {
           radius: 50,
           backgroundColor: Colors.blue[100],
           child: Text(
-            'BM',
+            'NP',
             style: TextStyle(
               color: Colors.blue[800],
               fontSize: 40,
@@ -74,6 +110,7 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
+  /// Construye la tarjeta que muestra información médica del paciente.
   Widget _buildInformationCard() {
     return Card(
       shape: RoundedRectangleBorder(
@@ -127,6 +164,7 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
+  /// Construye el formulario para actualizar datos personales del paciente.
   Widget _buildUpdateForm() {
     return Card(
       shape: RoundedRectangleBorder(
@@ -154,7 +192,9 @@ class PatientProfile extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Acción para actualizar los datos.
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(
@@ -174,6 +214,7 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
+  /// Construye un campo de texto genérico para el formulario.
   Widget _buildTextField(String label, String initialValue) {
     return TextFormField(
       initialValue: initialValue,
@@ -187,13 +228,29 @@ class PatientProfile extends StatelessWidget {
       ),
     );
   }
+
+  //#endregion
 }
 
+/// Widget para mostrar una fila de información en la tarjeta médica.
 class _InformationRow extends StatelessWidget {
+  //#region Properties
+
+  /// Icono que representa la categoría de la información.
   final IconData icon;
+
+  /// Etiqueta de la información.
   final String label;
+
+  /// Valor correspondiente a la información.
   final String value;
+
+  /// Color del icono y texto de la etiqueta.
   final Color color;
+
+  //#endregion
+
+  //#region Constructor
 
   const _InformationRow({
     required this.icon,
@@ -201,6 +258,10 @@ class _InformationRow extends StatelessWidget {
     required this.value,
     required this.color,
   });
+
+  //#endregion
+
+  //#region Overridden Methods
 
   @override
   Widget build(BuildContext context) {
@@ -230,4 +291,6 @@ class _InformationRow extends StatelessWidget {
       ),
     );
   }
+
+  //#endregion
 }

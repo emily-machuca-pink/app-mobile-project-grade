@@ -3,7 +3,6 @@
 //
 
 import 'package:flutter/material.dart';
-import 'package:mobile_dev/src/components/map/paramedico_map.dart';
 import 'package:mobile_dev/src/views/views.dart';
 
 void main() {
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: ParamedicHomeView(),
+      home: OnBoardingView(),
     );
   }
 }
