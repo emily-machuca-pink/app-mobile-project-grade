@@ -14,12 +14,12 @@ class ParamedicHomeView extends StatefulWidget {
 
 class _ParamedicHomeViewState extends State<ParamedicHomeView> {
   List<LatLng> routePoints = [];
-  late LatLng currentLocation;
+  late LatLng _currentLocation = const LatLng(10.9827583, -74.8101591);
 
   @override
   void initState() {
     super.initState();
-    getCurrentLocation(); // Obtener ubicación al iniciar
+    WidgetsBinding.instance.addPostFrameCallback((_) => getCurrentLocation());
   }
 
   // Función para obtener la ubicación actual
@@ -47,7 +47,7 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
     // Obtener la ubicación
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
-      currentLocation = LatLng(position.latitude, position.longitude);
+      _currentLocation = LatLng(position.latitude, position.longitude);
     });
 
     fetchRoute(); // Llamar a fetchRoute después de obtener la ubicación
@@ -63,7 +63,7 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
 
     final Map<String, dynamic> body = {
       "points": [
-        [currentLocation.longitude, currentLocation.latitude], // Ubicación actual
+        [_currentLocation.longitude, _currentLocation.latitude], // Ubicación actual
         [end.longitude, end.latitude]
       ],
       "profile": "car",
@@ -130,7 +130,7 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
             flex: 2,
             child: FlutterMap(
               options: MapOptions(
-                initialCenter: currentLocation ?? LatLng(10.9827583, -74.8101591), // Usamos la ubicación actual
+                initialCenter: _currentLocation ?? LatLng(10.9827583, -74.8101591), // Usamos la ubicación actual
                 maxZoom: 16.0,
               ),
               children: [
@@ -144,7 +144,7 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
                 MarkerLayer(
                   markers: [
                     Marker(
-                      point: currentLocation,
+                      point: _currentLocation,
                       child: const Icon(Icons.location_on, color: Colors.red, size: 30),
                     ),
                     const Marker(
