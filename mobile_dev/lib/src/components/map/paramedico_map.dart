@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:geolocator/geolocator.dart';
+import 'package:mobile_dev/src/services/location_service.dart'; // Importar el servicio de ubicación
 
 class ParamedicHomeView extends StatefulWidget {
   const ParamedicHomeView({super.key});
@@ -24,33 +24,16 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
 
   // Función para obtener la ubicación actual
   Future<void> getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    LatLng? currentLocation = await LocationService.getCurrentLocation();
 
-    // Verificar si el servicio de ubicación está habilitado
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      _showErrorDialog('El servicio de ubicación está deshabilitado.');
-      return;
+    if (currentLocation != null) {
+      setState(() {
+        _currentLocation = currentLocation;
+      });
+      fetchRoute(); // Llamar a fetchRoute después de obtener la ubicación
+    } else {
+      _showErrorDialog('No se pudo obtener la ubicación.');
     }
-
-    // Verificar permisos de ubicación
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        _showErrorDialog('Los permisos de ubicación están denegados.');
-        return;
-      }
-    }
-
-    // Obtener la ubicación
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      _currentLocation = LatLng(position.latitude, position.longitude);
-    });
-
-    fetchRoute(); // Llamar a fetchRoute después de obtener la ubicación
   }
 
   // Función para obtener la ruta desde la ubicación actual hasta el destino
@@ -130,7 +113,7 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
             flex: 2,
             child: FlutterMap(
               options: MapOptions(
-                initialCenter: _currentLocation ?? LatLng(10.9827583, -74.8101591), // Usamos la ubicación actual
+                initialCenter: _currentLocation, // Usamos la ubicación actual
                 maxZoom: 16.0,
               ),
               children: [
