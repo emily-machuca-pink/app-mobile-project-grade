@@ -41,7 +41,7 @@ class _CreditCardViewState extends State<CreditCardView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Tarjeta de Crédito visual
+              // Tarjeta de Crédito visual (más pequeña y con logo)
               Card(
                 elevation: 10,
                 shape: RoundedRectangleBorder(
@@ -50,43 +50,44 @@ class _CreditCardViewState extends State<CreditCardView> {
                 color: Colors.blueAccent,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        _formattedCardNumber.isEmpty
-                            ? '**** **** **** ****'
-                            : _formattedCardNumber,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                  child: SizedBox(
+                    width: 300, // Ajustar el tamaño de la tarjeta
+                    height: 180, // Ajustar el tamaño de la tarjeta
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Logo de Visa
+                        Align(alignment: Alignment.topRight, child: Image.asset('assets/mastercard_logo.png')),
+                        Text(
+                          _formattedCardNumber.isEmpty ? '**** **** **** ****' : _formattedCardNumber,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _formattedExpiryDate.isEmpty
-                                ? 'MM/AA'
-                                : _formattedExpiryDate,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _formattedExpiryDate.isEmpty ? 'MM/AA' : _formattedExpiryDate,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Text(
-                            _cardHolder.isEmpty
-                                ? 'Nombre del titular'
-                                : _cardHolder,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
+                            Text(
+                              _cardHolder.isEmpty ? 'Nombre del titular' : _cardHolder,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -150,8 +151,7 @@ class _CreditCardViewState extends State<CreditCardView> {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa la fecha de vencimiento';
                         }
-                        if (!RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$')
-                            .hasMatch(value)) {
+                        if (!RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$').hasMatch(value)) {
                           return 'Formato de fecha inválido (MM/AA)';
                         }
                         return null;
@@ -187,12 +187,11 @@ class _CreditCardViewState extends State<CreditCardView> {
                           );
                         }
                       },
-                      child: const Text('Guardar Tarjeta'),
                       style: ElevatedButton.styleFrom(
-                        surfaceTintColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 15),
+                        backgroundColor: Colors.green, // Cambia el color de fondo
+                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                       ),
+                      child: const Text('Guardar Tarjeta'),
                     ),
                   ],
                 ),
