@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mobile_dev/src/components/medical_folder/medical_folder.dart';
 import 'package:mobile_dev/src/services/location_service.dart';
+import 'package:mobile_dev/src/views/patient_profile/patient_profile.dart';
 
 class EmergencyButtonView extends StatefulWidget {
-  const EmergencyButtonView({Key? key}) : super(key: key);
+  const EmergencyButtonView({super.key});
 
   @override
   _EmergencyButtonViewState createState() => _EmergencyButtonViewState();
@@ -26,7 +28,8 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
         _currentLocation = currentLocation;
       });
     } else {
-      _showErrorDialog('No se pudo obtener la ubicación. Verifique los permisos.');
+      _showErrorDialog(
+          'No se pudo obtener la ubicación. Verifique los permisos.');
     }
   }
 
@@ -47,9 +50,10 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
   }
 
   void _activateEmergency() {
-    print('Emergencia activada en la ubicación: Lat: ${_currentLocation.latitude}, Lng: ${_currentLocation.longitude}');
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Emergencia activada en la ubicación: Lat: ${_currentLocation.latitude}, Lng: ${_currentLocation.longitude}')),
+      SnackBar(
+          content: Text(
+              'Emergencia activada en la ubicación: Lat: ${_currentLocation.latitude}, Lng: ${_currentLocation.longitude}')),
     );
   }
 
@@ -93,7 +97,7 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
@@ -117,11 +121,13 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              icon: const Icon(Icons.folder_copy, size: 40, color: Colors.white),
+              icon:
+                  const Icon(Icons.folder_copy, size: 40, color: Colors.white),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MedicalFolderView()),
+                  MaterialPageRoute(
+                      builder: (context) => const MedicalFolderView()),
                 );
               },
             ),
@@ -129,7 +135,11 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
             IconButton(
               icon: const Icon(Icons.person, size: 40, color: Colors.white),
               onPressed: () {
-                // Acción para el botón de perfil
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PatientProfile()),
+                );
               },
             ),
           ],
@@ -149,12 +159,12 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
             Container(
               height: 150,
               width: 150,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.red,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black,
                     blurRadius: 10,
                     spreadRadius: 5,
                   ),
@@ -170,75 +180,6 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-// Vista de la carpeta médica con la facturación y número de emergencias
-class MedicalFolderView extends StatelessWidget {
-  const MedicalFolderView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Datos ficticios para las emergencias y facturación
-    int emergencyCount = 3; // Número de emergencias
-    double totalInvoice = 500.75; // Facturación total
-
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Carpeta Médica',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Información Médica:',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Nombre: Juan Pérez\nEdad: 30 años\nAlergias: Ninguna\nEnfermedades: Ninguna',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 40),
-              Text(
-                'Número de Emergencias: $emergencyCount',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Facturación Total: \$${totalInvoice.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

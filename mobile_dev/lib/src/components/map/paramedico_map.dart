@@ -3,18 +3,87 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:mobile_dev/src/services/location_service.dart'; // Importar el servicio de ubicación
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:mobile_dev/src/services/location_service.dart';
 
-class ParamedicHomeView extends StatefulWidget {
-  const ParamedicHomeView({super.key});
+class EmergenciasListView extends StatelessWidget {
+  final List<Emergencia> emergencias = [
+    Emergencia(
+      id: 1,
+      nombre: "Emergencia 1",
+      ubicacion: LatLng(10.986847, -74.8195107),
+      descripcion: "Accidente de tráfico",
+    ),
+    Emergencia(
+      id: 2,
+      nombre: "Emergencia 2",
+      ubicacion: LatLng(10.991147, -74.8215107),
+      descripcion: "Asalto en la calle",
+    ),
+    // Agregar más emergencias
+  ];
+
+  EmergenciasListView({super.key});
 
   @override
-  _ParamedicHomeViewState createState() => _ParamedicHomeViewState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Emergencias Disponibles'),
+        backgroundColor: Colors.blue,
+      ),
+      body: ListView.builder(
+        itemCount: emergencias.length,
+        itemBuilder: (context, index) {
+          final emergencia = emergencias[index];
+          return ListTile(
+            title: Text(emergencia.nombre),
+            subtitle: Text(emergencia.descripcion),
+            trailing: Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      EmergencyRouteView(emergencia: emergencia),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }
 
-class _ParamedicHomeViewState extends State<ParamedicHomeView> {
+class Emergencia {
+  final int id;
+  final String nombre;
+  final LatLng ubicacion;
+  final String descripcion;
+
+  Emergencia({
+    required this.id,
+    required this.nombre,
+    required this.ubicacion,
+    required this.descripcion,
+  });
+}
+
+class EmergencyRouteView extends StatefulWidget {
+  final Emergencia emergencia;
+
+  const EmergencyRouteView({super.key, required this.emergencia});
+
+  @override
+  _EmergencyRouteViewState createState() => _EmergencyRouteViewState();
+}
+
+class _EmergencyRouteViewState extends State<EmergencyRouteView> {
   List<LatLng> routePoints = [];
+  List<String> navigationInstructions = [];
   late LatLng _currentLocation = const LatLng(10.9827583, -74.8101591);
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -22,37 +91,35 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
     WidgetsBinding.instance.addPostFrameCallback((_) => getCurrentLocation());
   }
 
-  // Función para obtener la ubicación actual
   Future<void> getCurrentLocation() async {
     LatLng? currentLocation = await LocationService.getCurrentLocation();
-
     if (currentLocation != null) {
       setState(() {
         _currentLocation = currentLocation;
       });
-      fetchRoute(); // Llamar a fetchRoute después de obtener la ubicación
+      fetchRoute();
     } else {
       _showErrorDialog('No se pudo obtener la ubicación.');
     }
   }
 
-  // Función para obtener la ruta desde la ubicación actual hasta el destino
   Future<void> fetchRoute() async {
-    const String apiKey = '9bf13d47-9f64-44a4-889b-519620b3ab16'; // 🔒 Usa dotenv si es posible
+    const String apiKey = '9bf13d47-9f64-44a4-889b-519620b3ab16';
     const String url = 'https://graphhopper.com/api/1/route';
-
-    // Coordenadas del destino
-    const LatLng end = LatLng(10.986847, -74.8195107);
 
     final Map<String, dynamic> body = {
       "points": [
-        [_currentLocation.longitude, _currentLocation.latitude], // Ubicación actual
-        [end.longitude, end.latitude]
+        [_currentLocation.longitude, _currentLocation.latitude],
+        [
+          widget.emergencia.ubicacion.longitude,
+          widget.emergencia.ubicacion.latitude
+        ]
       ],
       "profile": "car",
       "locale": "es",
       "calc_points": true,
-      "points_encoded": false
+      "points_encoded": false,
+      "instructions": true
     };
 
     try {
@@ -64,13 +131,16 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         if (data["paths"] != null && data["paths"].isNotEmpty) {
-          final List<dynamic> points = data["paths"][0]["points"]["coordinates"];
+          final List<dynamic> points =
+              data["paths"][0]["points"]["coordinates"];
+          final List<dynamic> instructions = data["paths"][0]["instructions"];
 
           setState(() {
-            // Convertimos la lista de coordenadas en puntos LatLng
-            routePoints = points.map((point) => LatLng(point[1], point[0])).toList();
+            routePoints =
+                points.map((point) => LatLng(point[1], point[0])).toList();
+            navigationInstructions =
+                instructions.map((inst) => inst["text"].toString()).toList();
           });
         } else {
           throw Exception("No se encontraron rutas disponibles.");
@@ -79,8 +149,14 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
         throw Exception('Error al obtener la ruta: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error de conexión: $e');
       _showErrorDialog(e.toString());
+    }
+  }
+
+  Future<void> speakInstructions() async {
+    for (String instruction in navigationInstructions) {
+      await flutterTts.speak(instruction);
+      await Future.delayed(Duration(seconds: 3));
     }
   }
 
@@ -104,7 +180,7 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inicio - Paramédico'),
+        title: Text('Ruta a ${widget.emergencia.nombre}'),
         backgroundColor: Colors.blue,
       ),
       body: Column(
@@ -113,123 +189,59 @@ class _ParamedicHomeViewState extends State<ParamedicHomeView> {
             flex: 2,
             child: FlutterMap(
               options: MapOptions(
-                initialCenter: _currentLocation, // Usamos la ubicación actual
+                initialCenter: _currentLocation,
                 maxZoom: 16.0,
               ),
               children: [
-                // Capa de mapas de OpenStreetMap
                 TileLayer(
                   urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                   subdomains: const ['a', 'b', 'c'],
                 ),
-
-                // Marcadores de inicio y destino
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: _currentLocation,
-                      child: const Icon(Icons.location_on, color: Colors.red, size: 30),
-                    ),
-                    const Marker(
-                      point: LatLng(10.986847, -74.8195107),
-                      child: Icon(Icons.location_on, color: Colors.green, size: 30),
-                    ),
-                  ],
-                ),
-
-                // Dibuja la línea de la ruta obtenida de la API
-                PolylineLayer(
-                  polylines: [
-                    Polyline(
-                      points: routePoints, // Aquí usamos los puntos de la API
-                      strokeWidth: 4.0,
-                      color: Colors.blue, // Azul para representar la ruta
-                    ),
-                  ],
-                ),
+                MarkerLayer(markers: [
+                  Marker(
+                    point: _currentLocation,
+                    child: const Icon(Icons.location_on,
+                        color: Colors.red, size: 30),
+                  ),
+                  Marker(
+                    point: widget.emergencia.ubicacion,
+                    child: const Icon(Icons.location_on,
+                        color: Colors.green, size: 30),
+                  ),
+                ]),
+                PolylineLayer(polylines: [
+                  Polyline(
+                    points: routePoints,
+                    strokeWidth: 4.0,
+                    color: Colors.blue,
+                  ),
+                ]),
               ],
             ),
           ),
-          // Botón para iniciar la navegación
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: fetchRoute,
-              child: const Text('Iniciar'),
+              onPressed: () {
+                fetchRoute().then((_) => speakInstructions());
+              },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              child: const Text('Iniciar'),
             ),
           ),
           Expanded(
             flex: 1,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Emergencias recientes',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: ListTile(
-                            leading: const Icon(Icons.warning, color: Colors.red),
-                            title: Text('Emergencia #${index + 1}'),
-                            subtitle: Text('Ubicación: Lat ${10.9827583 + index * 0.001}, Lng ${-74.8101591 + index * 0.001}'),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.arrow_forward, color: Colors.blue),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EmergencyDetailsView(emergencyIndex: index + 1),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+            child: ListView.builder(
+              itemCount: navigationInstructions.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Icon(Icons.directions, color: Colors.blue),
+                  title: Text(navigationInstructions[index]),
+                );
+              },
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class EmergencyDetailsView extends StatelessWidget {
-  final int emergencyIndex;
-  const EmergencyDetailsView({super.key, required this.emergencyIndex});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Detalles de Emergencia #$emergencyIndex'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text(
-          'Información de emergencia #$emergencyIndex',
-          style: const TextStyle(fontSize: 18),
-          textAlign: TextAlign.center,
-        ),
       ),
     );
   }

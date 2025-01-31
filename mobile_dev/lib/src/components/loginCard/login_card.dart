@@ -64,7 +64,8 @@ class _LoginCardState extends State<LoginCard> {
                 _buildRoleTabs(),
                 const SizedBox(height: 20),
                 if (_selectedRole == HospiRoles.paciente) _buildPatientForm(),
-                if (_selectedRole == HospiRoles.paramedico) _buildParamedicForm(),
+                if (_selectedRole == HospiRoles.paramedico)
+                  _buildParamedicForm(),
               ],
             ),
           ),
@@ -87,7 +88,9 @@ class _LoginCardState extends State<LoginCard> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                color: _selectedRole == HospiRoles.paciente ? Colors.blue : Colors.grey[300],
+                color: _selectedRole == HospiRoles.paciente
+                    ? Colors.blue
+                    : Colors.grey[300],
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   bottomLeft: Radius.circular(20),
@@ -97,7 +100,9 @@ class _LoginCardState extends State<LoginCard> {
               child: Text(
                 'Paciente',
                 style: TextStyle(
-                  color: _selectedRole == HospiRoles.paciente ? Colors.white : Colors.black,
+                  color: _selectedRole == HospiRoles.paciente
+                      ? Colors.white
+                      : Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -110,7 +115,9 @@ class _LoginCardState extends State<LoginCard> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                color: _selectedRole == HospiRoles.paramedico ? Colors.red : Colors.grey[300],
+                color: _selectedRole == HospiRoles.paramedico
+                    ? Colors.red
+                    : Colors.grey[300],
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -120,7 +127,9 @@ class _LoginCardState extends State<LoginCard> {
               child: Text(
                 'Paramédico',
                 style: TextStyle(
-                  color: _selectedRole == HospiRoles.paramedico ? Colors.white : Colors.black,
+                  color: _selectedRole == HospiRoles.paramedico
+                      ? Colors.white
+                      : Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -156,7 +165,8 @@ class _LoginCardState extends State<LoginCard> {
           alignment: Alignment.centerLeft,
           child: TextButton(
             onPressed: () {},
-            child: const Text('¿Olvidé mi contraseña?', style: TextStyle(color: Colors.black)),
+            child: const Text('¿Olvidé mi contraseña?',
+                style: TextStyle(color: Colors.black)),
           ),
         ),
         const SizedBox(height: 10),
@@ -164,14 +174,16 @@ class _LoginCardState extends State<LoginCard> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const EmergencyButtonView()),
+              MaterialPageRoute(
+                  builder: (context) => const EmergencyButtonView()),
             );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           ),
-          child: const Text('Inicia Sesión', style: TextStyle(color: Colors.white)),
+          child: const Text('Inicia Sesión',
+              style: TextStyle(color: Colors.white)),
         ),
       ],
     );
@@ -194,7 +206,8 @@ class _LoginCardState extends State<LoginCard> {
           alignment: Alignment.centerLeft,
           child: TextButton(
             onPressed: () {},
-            child: const Text('¿Olvidé mi contraseña?', style: TextStyle(color: Colors.black)),
+            child: const Text('¿Olvidé mi contraseña?',
+                style: TextStyle(color: Colors.black)),
           ),
         ),
         const SizedBox(height: 10),
@@ -202,14 +215,15 @@ class _LoginCardState extends State<LoginCard> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ParamedicHomeView()),
+              MaterialPageRoute(builder: (context) => EmergenciasListView()),
             );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           ),
-          child: const Text('Inicia Sesión', style: TextStyle(color: Colors.white)),
+          child: const Text('Inicia Sesión',
+              style: TextStyle(color: Colors.white)),
         ),
       ],
     );
@@ -230,7 +244,8 @@ class _LoginCardState extends State<LoginCard> {
         DropdownMenuItem(value: 'TI', child: Text('Tarjeta de Identidad')),
         DropdownMenuItem(value: 'PP', child: Text('Pasaporte')),
       ],
-      onChanged: (value) => setState(() => _selectedDocumentType = value ?? 'CC'),
+      onChanged: (value) =>
+          setState(() => _selectedDocumentType = value ?? 'CC'),
     );
   }
 
