@@ -1,8 +1,13 @@
+//
+//  Copyright © 2025 Proyecto de grado. All rights reserved.
+//
+
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:mobile_dev/src/components/medical_folder/medical_folder.dart';
-import 'package:mobile_dev/src/services/location_service.dart';
-import 'package:mobile_dev/src/views/patient_profile/patient_profile.dart';
+import 'package:mobile_dev/src/components/emergency/botton_actions.dart';
+import 'package:mobile_dev/src/components/emergency/emergency_button.dart';
+import 'package:mobile_dev/src/components/emergency/location_info.dart';
+import 'package:mobile_dev/src/services/location/location_service.dart';
 
 class EmergencyButtonView extends StatefulWidget {
   const EmergencyButtonView({super.key});
@@ -21,15 +26,13 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
   }
 
   Future<void> _getCurrentLocation() async {
-    // Verificar permisos y obtener ubicación
     LatLng? currentLocation = await LocationService.getCurrentLocation();
     if (currentLocation != null) {
       setState(() {
         _currentLocation = currentLocation;
       });
     } else {
-      _showErrorDialog(
-          'No se pudo obtener la ubicación. Verifique los permisos.');
+      _showErrorDialog('No se pudo obtener la ubicación. Verifique los permisos.');
     }
   }
 
@@ -52,8 +55,10 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
   void _activateEmergency() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(
-              'Emergencia activada en la ubicación: Lat: ${_currentLocation.latitude}, Lng: ${_currentLocation.longitude}')),
+        content: Text(
+          'Emergencia activada en la ubicación: Lat: ${_currentLocation.latitude}, Lng: ${_currentLocation.longitude}',
+        ),
+      ),
     );
   }
 
@@ -62,17 +67,12 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          'Emergencia',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('Emergencia', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       backgroundColor: Colors.blue,
@@ -80,105 +80,9 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            _buildLocationInfo(),
-            _buildBottomActions(context),
-            _buildEmergencyButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLocationInfo() {
-    return Positioned(
-      top: 20,
-      left: 20,
-      right: 20,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          'Ubicación actual:\nLat: ${_currentLocation.latitude.toStringAsFixed(4)}\nLng: ${_currentLocation.longitude.toStringAsFixed(4)}',
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomActions(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              icon:
-                  const Icon(Icons.folder_copy, size: 40, color: Colors.white),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MedicalFolderView()),
-                );
-              },
-            ),
-            const SizedBox(width: 40),
-            IconButton(
-              icon: const Icon(Icons.person, size: 40, color: Colors.white),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PatientProfile()),
-                );
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget _buildEmergencyButton() {
-    return Center(
-      child: GestureDetector(
-        onTap: _activateEmergency,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              height: 150,
-              width: 150,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 10,
-                    spreadRadius: 5,
-                  ),
-                ],
-              ),
-            ),
-            const Text(
-              'SOS',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            LocationInfo(location: _currentLocation),
+            const BottomActions(),
+            EmergencyButton(onTap: _activateEmergency),
           ],
         ),
       ),

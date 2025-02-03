@@ -4,23 +4,23 @@ import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:mobile_dev/src/services/location_service.dart';
+import 'package:mobile_dev/models/emergency/emergency.dart';
+import 'package:mobile_dev/src/services/location/location_service.dart';
 
 class EmergenciasListView extends StatelessWidget {
   final List<Emergencia> emergencias = [
     Emergencia(
       id: 1,
       nombre: "Emergencia 1",
-      ubicacion: LatLng(10.986847, -74.8195107),
+      ubicacion: const LatLng(10.986847, -74.8195107),
       descripcion: "Accidente de tráfico",
     ),
     Emergencia(
       id: 2,
       nombre: "Emergencia 2",
-      ubicacion: LatLng(10.991147, -74.8215107),
+      ubicacion: const LatLng(10.991147, -74.8215107),
       descripcion: "Asalto en la calle",
     ),
-    // Agregar más emergencias
   ];
 
   EmergenciasListView({super.key});
@@ -39,13 +39,12 @@ class EmergenciasListView extends StatelessWidget {
           return ListTile(
             title: Text(emergencia.nombre),
             subtitle: Text(emergencia.descripcion),
-            trailing: Icon(Icons.arrow_forward),
+            trailing: const Icon(Icons.arrow_forward),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      EmergencyRouteView(emergencia: emergencia),
+                  builder: (context) => EmergencyRouteView(emergencia: emergencia),
                 ),
               );
             },
@@ -54,20 +53,6 @@ class EmergenciasListView extends StatelessWidget {
       ),
     );
   }
-}
-
-class Emergencia {
-  final int id;
-  final String nombre;
-  final LatLng ubicacion;
-  final String descripcion;
-
-  Emergencia({
-    required this.id,
-    required this.nombre,
-    required this.ubicacion,
-    required this.descripcion,
-  });
 }
 
 class EmergencyRouteView extends StatefulWidget {
@@ -110,10 +95,7 @@ class _EmergencyRouteViewState extends State<EmergencyRouteView> {
     final Map<String, dynamic> body = {
       "points": [
         [_currentLocation.longitude, _currentLocation.latitude],
-        [
-          widget.emergencia.ubicacion.longitude,
-          widget.emergencia.ubicacion.latitude
-        ]
+        [widget.emergencia.ubicacion.longitude, widget.emergencia.ubicacion.latitude]
       ],
       "profile": "car",
       "locale": "es",
@@ -132,15 +114,12 @@ class _EmergencyRouteViewState extends State<EmergencyRouteView> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data["paths"] != null && data["paths"].isNotEmpty) {
-          final List<dynamic> points =
-              data["paths"][0]["points"]["coordinates"];
+          final List<dynamic> points = data["paths"][0]["points"]["coordinates"];
           final List<dynamic> instructions = data["paths"][0]["instructions"];
 
           setState(() {
-            routePoints =
-                points.map((point) => LatLng(point[1], point[0])).toList();
-            navigationInstructions =
-                instructions.map((inst) => inst["text"].toString()).toList();
+            routePoints = points.map((point) => LatLng(point[1], point[0])).toList();
+            navigationInstructions = instructions.map((inst) => inst["text"].toString()).toList();
           });
         } else {
           throw Exception("No se encontraron rutas disponibles.");
@@ -156,7 +135,7 @@ class _EmergencyRouteViewState extends State<EmergencyRouteView> {
   Future<void> speakInstructions() async {
     for (String instruction in navigationInstructions) {
       await flutterTts.speak(instruction);
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 3));
     }
   }
 
@@ -200,13 +179,11 @@ class _EmergencyRouteViewState extends State<EmergencyRouteView> {
                 MarkerLayer(markers: [
                   Marker(
                     point: _currentLocation,
-                    child: const Icon(Icons.location_on,
-                        color: Colors.red, size: 30),
+                    child: const Icon(Icons.location_on, color: Colors.red, size: 30),
                   ),
                   Marker(
                     point: widget.emergencia.ubicacion,
-                    child: const Icon(Icons.location_on,
-                        color: Colors.green, size: 30),
+                    child: const Icon(Icons.location_on, color: Colors.green, size: 30),
                   ),
                 ]),
                 PolylineLayer(polylines: [
@@ -235,7 +212,7 @@ class _EmergencyRouteViewState extends State<EmergencyRouteView> {
               itemCount: navigationInstructions.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Icon(Icons.directions, color: Colors.blue),
+                  leading: const Icon(Icons.directions, color: Colors.blue),
                   title: Text(navigationInstructions[index]),
                 );
               },
