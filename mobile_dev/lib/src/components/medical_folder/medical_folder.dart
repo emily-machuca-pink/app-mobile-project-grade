@@ -47,20 +47,6 @@ class MedicalFolderView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Información Médica:',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Nombre: Juan Pérez\nEdad: 30 años\nAlergias: Ninguna\nEnfermedades: Ninguna',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        const SizedBox(height: 40),
                         Text(
                           'Número de Emergencias: $emergencyCount',
                           style: const TextStyle(
@@ -117,14 +103,12 @@ class MedicalFolderView extends StatelessWidget {
                             // Navegar a la vista de la tarjeta de crédito
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => const CreditCardView()),
+                              MaterialPageRoute(builder: (context) => const CreditCardView()),
                             );
                           },
                         ),
                         ListTile(
-                          leading:
-                              Icon(Icons.account_balance, color: Colors.green),
+                          leading: Icon(Icons.account_balance, color: Colors.green),
                           title: const Text('SISBEN'),
                           onTap: () {
                             // Acción para seleccionar SISBEN

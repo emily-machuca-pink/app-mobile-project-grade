@@ -1,13 +1,12 @@
-//
-//  Copyright © 2025 Proyecto de grado. All rights reserved.
-//
-
 import 'package:flutter/material.dart';
+import 'package:mobile_dev/src/components/bienestar/control_binestar.dart';
 import 'package:mobile_dev/src/components/medical_folder/medical_folder.dart';
 import 'package:mobile_dev/src/views/patient_profile/patient_profile.dart';
 
 class BottomActions extends StatelessWidget {
-  const BottomActions({super.key});
+  final Map<String, dynamic> patientData;
+
+  const BottomActions({super.key, required this.patientData});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,19 @@ class BottomActions extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PatientProfile()),
+                  MaterialPageRoute(
+                    builder: (context) => PatientProfile(data: patientData),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 40),
+            IconButton(
+              icon: const Icon(Icons.help, size: 40, color: Colors.white), // Icono de ayuda
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WellnessControlView()), // Navegar a la vista de ayuda
                 );
               },
             ),

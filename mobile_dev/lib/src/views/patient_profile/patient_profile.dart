@@ -1,7 +1,3 @@
-// Copyright © 2025, Proyecto de Grado
-// Todos los derechos reservados.
-
-// Importaciones principales
 import 'package:flutter/material.dart';
 
 /// {@template patient_profile}
@@ -9,14 +5,9 @@ import 'package:flutter/material.dart';
 /// Contiene información personal, médica y opciones para editar estos datos.
 /// {@endtemplate}
 class PatientProfile extends StatelessWidget {
-  //#region Constructor
+  final Map<String, dynamic> data;
 
-  /// {@macro patient_profile}
-  const PatientProfile({super.key});
-
-  //#endregion
-
-  //#region Overridden Methods
+  const PatientProfile({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +17,6 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  //#endregion
-
-  //#region Private Widgets
-
-  /// Construye la barra de navegación superior.
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.blue,
@@ -56,7 +42,6 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  /// Construye el cuerpo principal de la pantalla.
   Widget _buildBody() {
     return SingleChildScrollView(
       child: Padding(
@@ -74,7 +59,6 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  /// Construye el encabezado con el avatar y el nombre del paciente.
   Widget _buildHeader() {
     return Column(
       children: [
@@ -82,7 +66,7 @@ class PatientProfile extends StatelessWidget {
           radius: 50,
           backgroundColor: Colors.blue[100],
           child: Text(
-            'NP',
+            data['name'][0], // Primera letra del nombre del paciente
             style: TextStyle(
               color: Colors.blue[800],
               fontSize: 40,
@@ -91,12 +75,12 @@ class PatientProfile extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'NOMBRE DEL PACIENTE',
-              style: TextStyle(
+              '${data['name']} ${data['lastName']}',
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.blue,
@@ -110,52 +94,51 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  /// Construye la tarjeta que muestra información médica del paciente.
   Widget _buildInformationCard() {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
       elevation: 3,
-      child: const Padding(
-        padding: EdgeInsets.all(16.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _InformationRow(
               icon: Icons.water_drop,
               label: 'Tipo de sangre',
-              value: 'B+',
+              value: data['bloodType'],
               color: Colors.red,
             ),
             _InformationRow(
               icon: Icons.medical_services,
               label: 'Alergias',
-              value: 'Ninguna',
+              value: data['allergies'],
               color: Colors.red,
             ),
             _InformationRow(
               icon: Icons.local_hospital,
               label: 'Medicamentos',
-              value: 'Metformina (1000mg), Insulina',
+              value: data['medicines'],
               color: Colors.red,
             ),
             _InformationRow(
               icon: Icons.home,
               label: 'Dirección',
-              value: 'Calle 96 #56-30',
+              value: data['address'],
               color: Colors.red,
             ),
             _InformationRow(
               icon: Icons.description,
               label: 'Notas médicas',
-              value: 'Diabetes tipo 2, antecedentes de hipoglucemia severa, riesgo de paro cardíaco bajo esfuerzo físico extremo',
+              value: data['medicalNotes'],
               color: Colors.red,
             ),
             _InformationRow(
               icon: Icons.favorite,
               label: 'Donador de órganos',
-              value: 'No',
+              value: data['organDonor'] ? 'Sí' : 'No',
               color: Colors.red,
             ),
           ],
@@ -164,7 +147,6 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  /// Construye el formulario para actualizar datos personales del paciente.
   Widget _buildUpdateForm() {
     return Card(
       shape: RoundedRectangleBorder(
@@ -185,9 +167,9 @@ class PatientProfile extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            _buildTextField('Nombre', 'Benjamin Perez'),
+            _buildTextField('Nombre', data['name']),
             const SizedBox(height: 10),
-            _buildTextField('Email', 'benjaperez@gmail.com'),
+            _buildTextField('Email', data['email']),
             const SizedBox(height: 20),
             Align(
               alignment: Alignment.center,
@@ -214,7 +196,6 @@ class PatientProfile extends StatelessWidget {
     );
   }
 
-  /// Construye un campo de texto genérico para el formulario.
   Widget _buildTextField(String label, String initialValue) {
     return TextFormField(
       initialValue: initialValue,
@@ -228,29 +209,14 @@ class PatientProfile extends StatelessWidget {
       ),
     );
   }
-
-  //#endregion
 }
 
 /// Widget para mostrar una fila de información en la tarjeta médica.
 class _InformationRow extends StatelessWidget {
-  //#region Properties
-
-  /// Icono que representa la categoría de la información.
   final IconData icon;
-
-  /// Etiqueta de la información.
   final String label;
-
-  /// Valor correspondiente a la información.
   final String value;
-
-  /// Color del icono y texto de la etiqueta.
   final Color color;
-
-  //#endregion
-
-  //#region Constructor
 
   const _InformationRow({
     required this.icon,
@@ -258,10 +224,6 @@ class _InformationRow extends StatelessWidget {
     required this.value,
     required this.color,
   });
-
-  //#endregion
-
-  //#region Overridden Methods
 
   @override
   Widget build(BuildContext context) {
@@ -291,6 +253,4 @@ class _InformationRow extends StatelessWidget {
       ),
     );
   }
-
-  //#endregion
 }
