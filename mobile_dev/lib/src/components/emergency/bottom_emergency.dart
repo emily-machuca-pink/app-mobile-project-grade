@@ -10,7 +10,9 @@ import 'package:mobile_dev/src/components/emergency/location_info.dart';
 import 'package:mobile_dev/src/services/location/location_service.dart';
 
 class EmergencyButtonView extends StatefulWidget {
-  const EmergencyButtonView({super.key});
+  final Map<String, dynamic> userData; // Recibes los datos del usuario
+
+  const EmergencyButtonView({super.key, required this.userData}); // Constructor para recibir los datos
 
   @override
   _EmergencyButtonViewState createState() => _EmergencyButtonViewState();
@@ -81,7 +83,8 @@ class _EmergencyButtonViewState extends State<EmergencyButtonView> {
           alignment: Alignment.center,
           children: [
             LocationInfo(location: _currentLocation),
-            const BottomActions(),
+            // Pasamos userData a BottomActions
+            BottomActions(patientData: widget.userData),
             EmergencyButton(onTap: _activateEmergency),
           ],
         ),

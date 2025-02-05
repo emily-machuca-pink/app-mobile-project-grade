@@ -17,6 +17,7 @@ dependencies:
   latlong2: ^0.9.1
   http: ^1.2.2
   geolocator: ^9.0.2
+  dart_frog: ^1.0.0
   flutter_map_cancellable_tile_provider: ^3.0.2
 
 dev_dependencies:

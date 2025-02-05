@@ -17,16 +17,16 @@ class SignInView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: screenHeight * 0.15), // Ajustar el espaciado arriba del LoginCard
+              SizedBox(height: screenHeight * 0.15),
               const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: LoginCard(),
               ),
-              SizedBox(height: screenHeight * 0.05), // Espacio entre LoginCard y la imagen
+              SizedBox(height: screenHeight * 0.05),
               Image(
                 image: const AssetImage('assets/health-insurance.png'),
-                height: screenHeight * 0.25, // El 25% de la altura de la pantalla
-                width: screenWidth * 0.5, // El 50% del ancho de la pantalla
+                height: screenHeight * 0.25,
+                width: screenWidth * 0.5,
               ),
             ],
           ),

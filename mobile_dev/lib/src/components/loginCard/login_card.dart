@@ -1,41 +1,75 @@
-//
-//  Copyright © 2025 Proyecto de grado. All rights reserved.
-//
-
 import 'package:flutter/material.dart';
 import 'package:mobile_dev/src/components/components.dart';
 
 /// Enumeración para definir los roles en la aplicación.
 enum HospiRoles { paciente, paramedico }
 
-/// {@template login_card}
-/// Componente que representa una tarjeta de inicio de sesión.
-/// Permite cambiar entre los roles de paciente y paramédico.
-/// {@endtemplate}
 class LoginCard extends StatefulWidget {
-  //#region Constructor
-
-  /// {@macro login_card}
   const LoginCard({super.key});
-
-  //#endregion
 
   @override
   _LoginCardState createState() => _LoginCardState();
 }
 
 class _LoginCardState extends State<LoginCard> {
-  //#region Properties
-
-  /// Rol seleccionado actualmente.
   HospiRoles _selectedRole = HospiRoles.paciente;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  /// Tipo de documento seleccionado.
-  String _selectedDocumentType = 'CC';
+  final Map<String, Map<String, dynamic>> _users = {
+    'BenjaminPerez': {
+      'password': 'pass12355b',
+      'role': 'paciente',
+      'medicalHistory': {
+        'name': 'Benjamin',
+        'lastName': 'Perez',
+        'cedula': 123455655,
+        'email': 'benja.p@example.com',
+        'address': 'Calle 96 #56-30',
+        'bloodType': 'B+',
+        'allergies': 'Ninguna',
+        'medicines': 'Metformina (1000mg), Insulina',
+        'medicalNotes': 'Diabetes tipo 2, antecedentes de hipoglucemia severa, riesgo de paro cardíaco bajo esfuerzo físico extremo',
+        'organDonor': false
+      }
+    },
+    'LuisGutierrez': {
+      'password': 'pass123555l',
+      'role': 'paciente',
+      'medicalHistory': {
+        'name': 'Luis',
+        'lastName': 'Gutierrez',
+        'cedula': 12588685,
+        'email': 'lugu25@example.com',
+        'address': 'Calle 100 #58-30',
+        'bloodType': 'O-',
+        'allergies': 'Ninguna',
+        'medicines': 'Insulina',
+        'medicalNotes': 'Diabetes tipo 3, antecedentes de hipoglucemia severa, riesgo de paro cardíaco bajo esfuerzo físico extremo',
+        'organDonor': true
+      }
+    }
+  };
 
-  //#endregion
+  void _login() {
+    String username = _usernameController.text;
+    String password = _passwordController.text;
 
-  //#region Overridden Methods
+    if (_users.containsKey(username) && _users[username]!['password'] == password) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EmergencyButtonView(
+            userData: _users[username]!['medicalHistory'],
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Credenciales incorrectas')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +77,7 @@ class _LoginCardState extends State<LoginCard> {
       padding: const EdgeInsets.all(16.0),
       child: Center(
         child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 3,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -54,18 +86,12 @@ class _LoginCardState extends State<LoginCard> {
               children: [
                 const Text(
                   'Inicio Sesión',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
                 ),
                 const SizedBox(height: 20),
                 _buildRoleTabs(),
                 const SizedBox(height: 20),
-                if (_selectedRole == HospiRoles.paciente) _buildPatientForm(),
-                if (_selectedRole == HospiRoles.paramedico)
-                  _buildParamedicForm(),
+                _buildLoginForm(),
               ],
             ),
           ),
@@ -74,184 +100,59 @@ class _LoginCardState extends State<LoginCard> {
     );
   }
 
-  //#endregion
-
-  //#region Private Widgets
-
-  /// Construye las pestañas para cambiar entre roles.
   Widget _buildRoleTabs() {
     return Row(
       children: [
         Expanded(
           child: GestureDetector(
             onTap: () => setState(() => _selectedRole = HospiRoles.paciente),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: _selectedRole == HospiRoles.paciente
-                    ? Colors.blue
-                    : Colors.grey[300],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                ),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                'Paciente',
-                style: TextStyle(
-                  color: _selectedRole == HospiRoles.paciente
-                      ? Colors.white
-                      : Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            child: _buildTab('Paciente', _selectedRole == HospiRoles.paciente, Colors.blue),
           ),
         ),
         Expanded(
           child: GestureDetector(
             onTap: () => setState(() => _selectedRole = HospiRoles.paramedico),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: _selectedRole == HospiRoles.paramedico
-                    ? Colors.red
-                    : Colors.grey[300],
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                'Paramédico',
-                style: TextStyle(
-                  color: _selectedRole == HospiRoles.paramedico
-                      ? Colors.white
-                      : Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            child: _buildTab('Paramédico', _selectedRole == HospiRoles.paramedico, Colors.red),
           ),
         ),
       ],
     );
   }
 
-  /// Construye el formulario para pacientes.
-  Widget _buildPatientForm() => _buildPatientFormContent();
-
-  /// Construye el formulario para paramédicos.
-  Widget _buildParamedicForm() => _buildParamedicFormContent();
-
-  /// Contenido del formulario para pacientes.
-  Widget _buildPatientFormContent() {
-    return Column(
-      children: [
-        const Text(
-          'Nombre de la EPS',
-          style: TextStyle(fontSize: 18, color: Colors.blue),
-        ),
-        const SizedBox(height: 20),
-        _buildDropdownField(),
-        const SizedBox(height: 10),
-        _buildTextField('Número de documento'),
-        const SizedBox(height: 10),
-        _buildTextField('Contraseña', isPassword: true),
-        const SizedBox(height: 20),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-            onPressed: () {},
-            child: const Text('¿Olvidé mi contraseña?',
-                style: TextStyle(color: Colors.black)),
-          ),
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const EmergencyButtonView()),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          ),
-          child: const Text('Inicia Sesión',
-              style: TextStyle(color: Colors.white)),
-        ),
-      ],
-    );
-  }
-
-  /// Contenido del formulario para paramédicos.
-  Widget _buildParamedicFormContent() {
-    return Column(
-      children: [
-        const Text(
-          'Nombre de la EPS',
-          style: TextStyle(fontSize: 18, color: Colors.blue),
-        ),
-        const SizedBox(height: 20),
-        _buildTextField('Número de documento'),
-        const SizedBox(height: 10),
-        _buildTextField('Código de verificación', isPassword: true),
-        const SizedBox(height: 20),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-            onPressed: () {},
-            child: const Text('¿Olvidé mi contraseña?',
-                style: TextStyle(color: Colors.black)),
-          ),
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EmergenciasListView()),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          ),
-          child: const Text('Inicia Sesión',
-              style: TextStyle(color: Colors.white)),
-        ),
-      ],
-    );
-  }
-
-  /// Construye un campo desplegable para seleccionar el tipo de documento.
-  Widget _buildDropdownField() {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-        labelText: 'Tipo de documento',
-        filled: true,
-        fillColor: Colors.grey[200],
+  Widget _buildTab(String title, bool isSelected, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: isSelected ? color : Colors.grey[300],
+        borderRadius: BorderRadius.circular(20),
       ),
-      value: _selectedDocumentType,
-      items: const [
-        DropdownMenuItem(value: 'CC', child: Text('Cédula de Ciudadanía')),
-        DropdownMenuItem(value: 'TI', child: Text('Tarjeta de Identidad')),
-        DropdownMenuItem(value: 'PP', child: Text('Pasaporte')),
-      ],
-      onChanged: (value) =>
-          setState(() => _selectedDocumentType = value ?? 'CC'),
+      alignment: Alignment.center,
+      child: Text(
+        title,
+        style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
+      ),
     );
   }
 
-  /// Construye un campo de texto genérico.
-  Widget _buildTextField(String label, {bool isPassword = false}) {
+  Widget _buildLoginForm() {
+    return Column(
+      children: [
+        _buildTextField('Username', _usernameController),
+        const SizedBox(height: 10),
+        _buildTextField('Contraseña', _passwordController, isPassword: true),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _login,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10)),
+          child: const Text('Inicia Sesión', style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller, {bool isPassword = false}) {
     return TextFormField(
+      controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
         labelText: label,
@@ -261,6 +162,20 @@ class _LoginCardState extends State<LoginCard> {
       obscureText: isPassword,
     );
   }
+}
 
-  //#endregion
+class MedicalHistoryView extends StatelessWidget {
+  final Map<String, dynamic> data;
+  const MedicalHistoryView({super.key, required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Historial Médico de ${data['name']}')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(data.toString(), style: const TextStyle(fontSize: 16)),
+      ),
+    );
+  }
 }

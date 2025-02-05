@@ -31,7 +31,7 @@ class _CreditCardViewState extends State<CreditCardView> {
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () {
-            Navigator.pop(context); // Regresar a la vista anterior
+            Navigator.pop(context);
           },
         ),
       ),
@@ -41,23 +41,25 @@ class _CreditCardViewState extends State<CreditCardView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Tarjeta de Crédito visual (más pequeña y con logo)
               Card(
                 elevation: 10,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                color: Colors.blueAccent,
+                color: Colors.amber,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SizedBox(
-                    width: 300, // Ajustar el tamaño de la tarjeta
-                    height: 180, // Ajustar el tamaño de la tarjeta
+                    width: 300,
+                    height: 180,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Logo de Visa
-                        Align(alignment: Alignment.topRight, child: Image.asset('assets/mastercard_logo.png')),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Image.asset('assets/mastercard_logo.png', width: 50),
+                        ),
+                        const SizedBox(height: 10),
                         Text(
                           _formattedCardNumber.isEmpty ? '**** **** **** ****' : _formattedCardNumber,
                           style: const TextStyle(
@@ -92,114 +94,120 @@ class _CreditCardViewState extends State<CreditCardView> {
                 ),
               ),
               const SizedBox(height: 30),
-
-              // Formulario para ingresar los datos de la tarjeta
-              const Text(
-                'Agregar tarjeta de crédito:',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _cardNumberController,
-                      decoration: const InputDecoration(
-                        labelText: 'Número de tarjeta',
-                        hintText: '**** **** **** ****',
-                        prefixIcon: Icon(Icons.credit_card),
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                      maxLength: 16,
-                      onChanged: (value) {
-                        setState(() {
-                          _formattedCardNumber = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa el número de tarjeta';
-                        }
-                        if (value.length != 16) {
-                          return 'El número de tarjeta debe tener 16 dígitos';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _expiryDateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Fecha de vencimiento',
-                        hintText: 'MM/AA',
-                        prefixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                      maxLength: 5,
-                      onChanged: (value) {
-                        setState(() {
-                          _formattedExpiryDate = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa la fecha de vencimiento';
-                        }
-                        if (!RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$').hasMatch(value)) {
-                          return 'Formato de fecha inválido (MM/AA)';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _cardHolderController,
-                      decoration: const InputDecoration(
-                        labelText: 'Titular de la tarjeta',
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _cardHolder = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa el nombre del titular';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          // Aquí puedes agregar la lógica para guardar la tarjeta
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Tarjeta agregada')),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green, // Cambia el color de fondo
-                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      ),
-                      child: const Text('Guardar Tarjeta'),
-                    ),
-                  ],
-                ),
-              ),
+              _formularioCreditCard(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _formularioCreditCard() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Agregar tarjeta de crédito:',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _cardNumberController,
+                decoration: const InputDecoration(
+                  labelText: 'Número de tarjeta',
+                  hintText: '**** **** **** ****',
+                  prefixIcon: Icon(Icons.credit_card),
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: 16,
+                onChanged: (value) {
+                  setState(() {
+                    _formattedCardNumber = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa el número de tarjeta';
+                  }
+                  if (value.length != 16) {
+                    return 'El número de tarjeta debe tener 16 dígitos';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _expiryDateController,
+                decoration: const InputDecoration(
+                  labelText: 'Fecha de vencimiento',
+                  hintText: 'MM/AA',
+                  prefixIcon: Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: 5,
+                onChanged: (value) {
+                  setState(() {
+                    _formattedExpiryDate = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa la fecha de vencimiento';
+                  }
+                  if (!RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$').hasMatch(value)) {
+                    return 'Formato de fecha inválido (MM/AA)';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _cardHolderController,
+                decoration: const InputDecoration(
+                  labelText: 'Titular de la tarjeta',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _cardHolder = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa el nombre del titular';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Tarjeta agregada')),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                ),
+                child: const Text('Guardar Tarjeta'),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
