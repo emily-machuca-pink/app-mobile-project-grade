@@ -76,8 +76,6 @@ class _WellnessControlViewState extends State<WellnessControlView> {
                 inactiveColor: Colors.grey,
               ),
 
-              const SizedBox(height: 20),
-
               // Mostrar los iconos de cada estado
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,8 +87,6 @@ class _WellnessControlViewState extends State<WellnessControlView> {
                   );
                 }),
               ),
-
-              const SizedBox(height: 40),
 
               // Fecha y hora actual
               Row(
@@ -108,8 +104,6 @@ class _WellnessControlViewState extends State<WellnessControlView> {
                 ],
               ),
 
-              const SizedBox(height: 20),
-
               // Preguntas adicionales de síntomas
               const Text(
                 '¿Has experimentado alguno de los siguientes síntomas hoy?',
@@ -118,7 +112,6 @@ class _WellnessControlViewState extends State<WellnessControlView> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10),
 
               CheckboxListTile(
                 title: const Text('Vómitos'),
@@ -180,7 +173,7 @@ class _WellnessControlViewState extends State<WellnessControlView> {
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 10),
 
               // Botón para guardar
               ElevatedButton(
