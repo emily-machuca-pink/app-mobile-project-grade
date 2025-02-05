@@ -43,7 +43,7 @@ class BottomActions extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const WellnessControlView()), // Navegar a la vista de ayuda
+                  MaterialPageRoute(builder: (context) => const WellnessControlView()),
                 );
               },
             ),

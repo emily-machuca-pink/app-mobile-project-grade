@@ -12,13 +12,13 @@ class EmergenciasListView extends StatelessWidget {
     Emergencia(
       id: 1,
       nombre: "Emergencia 1",
-      ubicacion: const LatLng(10.986847, -74.8195107),
+      ubicacion: const LatLng(10.9817341, -74.8108746),
       descripcion: "Accidente de tráfico",
     ),
     Emergencia(
       id: 2,
       nombre: "Emergencia 2",
-      ubicacion: const LatLng(10.991147, -74.8215107),
+      ubicacion: const LatLng(10.96854, -74.78132),
       descripcion: "Asalto en la calle",
     ),
   ];

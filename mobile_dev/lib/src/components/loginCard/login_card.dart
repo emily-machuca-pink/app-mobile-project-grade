@@ -48,7 +48,23 @@ class _LoginCardState extends State<LoginCard> {
         'medicalNotes': 'Diabetes tipo 3, antecedentes de hipoglucemia severa, riesgo de paro cardíaco bajo esfuerzo físico extremo',
         'organDonor': true
       }
-    }
+    },
+    'CarlosMedina': {
+      'password': 'pass12345c',
+      'role': 'paramedico',
+      'medicalHistory': {
+        'name': 'Carlos',
+        'lastName': 'Medina',
+        'cedula': 19876432,
+        'email': 'carlos.medina@example.com',
+        'address': 'Calle 50 #12-10',
+        'bloodType': 'A+',
+        'allergies': 'Ninguna',
+        'medicines': 'No aplica',
+        'medicalNotes': 'Paramédico',
+        'organDonor': false
+      }
+    },
   };
 
   void _login() {
@@ -56,14 +72,25 @@ class _LoginCardState extends State<LoginCard> {
     String password = _passwordController.text;
 
     if (_users.containsKey(username) && _users[username]!['password'] == password) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EmergencyButtonView(
-            userData: _users[username]!['medicalHistory'],
+      // Si el rol es paramédico, navega a la vista de mapa
+      if (_users[username]!['role'] == 'paramedico') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EmergenciasListView(),
           ),
-        ),
-      );
+        );
+      } else {
+        // Si el rol es paciente, navega al historial médico
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EmergencyButtonView(
+              userData: _users[username]!['medicalHistory'],
+            ),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Credenciales incorrectas')),
@@ -160,22 +187,6 @@ class _LoginCardState extends State<LoginCard> {
         fillColor: Colors.grey[200],
       ),
       obscureText: isPassword,
-    );
-  }
-}
-
-class MedicalHistoryView extends StatelessWidget {
-  final Map<String, dynamic> data;
-  const MedicalHistoryView({super.key, required this.data});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Historial Médico de ${data['name']}')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(data.toString(), style: const TextStyle(fontSize: 16)),
-      ),
     );
   }
 }
